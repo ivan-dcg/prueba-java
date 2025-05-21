@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result) {
-        // valdation.validate(product, result);
+
         if (result.hasFieldErrors()) {
             return validation(result);
         }
@@ -46,7 +46,7 @@ public class UserController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
-        // valdation.validate(product, result);
+
         if (result.hasFieldErrors()) {
             return validation(result);
         }
