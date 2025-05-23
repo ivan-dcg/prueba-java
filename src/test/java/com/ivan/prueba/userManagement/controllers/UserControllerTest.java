@@ -2,6 +2,7 @@ package com.ivan.prueba.userManagement.controllers;
 
 import com.ivan.prueba.userManagement.entities.User;
 import com.ivan.prueba.userManagement.services.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,9 +32,16 @@ class UserControllerTest {
     @Mock
     private BindingResult bindingResult;
 
+    private AutoCloseable closeable;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -52,7 +60,7 @@ class UserControllerTest {
     @Test
     void testView() {
         User user = new User();
-        //user.setId(1L);
+        user.setId(1L);
         Optional<User> userOptional = Optional.of(user);
 
         when(userService.findById(1L)).thenReturn(userOptional);
@@ -60,7 +68,7 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.view(1L);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(user, response.getBody());
         verify(userService).findById(1L);
     }
@@ -72,7 +80,7 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.view(1L);
 
         assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
@@ -85,7 +93,7 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.create(user, bindingResult);
 
         assertNotNull(response);
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCode().value());
         assertEquals(user, response.getBody());
         verify(userService).save(user);
     }
@@ -98,13 +106,13 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.create(user, bindingResult);
 
         assertNotNull(response);
-        assertEquals(400, response.getStatusCodeValue());
+        assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
     void testUpdate_Valid() {
         User user = new User();
-        //user.setId(1L);
+        user.setId(1L);
         Optional<User> updatedUser = Optional.of(user);
 
         when(bindingResult.hasFieldErrors()).thenReturn(false);
@@ -113,7 +121,7 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.update(user, bindingResult, 1L);
 
         assertNotNull(response);
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCode().value());
         assertEquals(user, response.getBody());
         verify(userService).update(1L, user);
     }
@@ -126,13 +134,13 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.update(user, bindingResult, 1L);
 
         assertNotNull(response);
-        assertEquals(400, response.getStatusCodeValue());
+        assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
     void testDelete() {
         User user = new User();
-        //user.setId(1L);
+        user.setId(1L);
         Optional<User> userOptional = Optional.of(user);
 
         when(userService.delete(1L)).thenReturn(userOptional);
@@ -140,7 +148,7 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.delete(1L);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(user, response.getBody());
         verify(userService).delete(1L);
     }
@@ -152,6 +160,6 @@ class UserControllerTest {
         ResponseEntity<?> response = userController.delete(1L);
 
         assertNotNull(response);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
     }
 }
